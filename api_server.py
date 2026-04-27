@@ -7,6 +7,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ayurveda_recommender import load_and_preprocess, AyurvedaRecommender
+from dosha import load_dosha_model
 
 app = Flask(__name__)
 CORS(app)   # Allow cross-origin requests from the React UI
@@ -67,12 +68,33 @@ def dashboard():
         ]
     })
     
+
+dosha_model, reverse_mapping = load_dosha_model()
+
 @app.route("/dosha", methods=["POST"])
 def dosha():
-    return jsonify({
-        "dominant_dosha": "Vata",
-        "message": "Dosha detection coming soon"
-    })
+    data = request.json
+
+    try:
+        body_map = {"Thin": 0, "Medium": 1, "Heavy": 2}
+        skin_map = {"Dry": 0, "Normal": 1, "Oily": 2}
+        digestion_map = {"Irregular": 0, "Strong": 1, "Slow": 2}
+        sleep_map = {"Light": 0, "Moderate": 1, "Heavy": 2}
+
+        user_input = [
+            body_map[data["body"]],
+            skin_map[data["skin"]],
+            digestion_map[data["digestion"]],
+            sleep_map[data["sleep"]]
+        ]
+
+        prediction = dosha_model.predict([user_input])[0]
+        result = reverse_mapping[prediction]
+
+        return jsonify({"dominant_dosha": result})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
         
 @app.route("/diet", methods=["POST"])
 def diet():
