@@ -835,13 +835,22 @@ export default function Dashboard() {
                 <button className="modal-cancel" onClick={() => setShowLogoutConfirm(false)}>
                   Stay
                 </button>
-                <button className="modal-confirm" onClick={() => {
-                  setShowLogoutConfirm(false);
-                  // nav('/login'); // Uncomment when login route exists
-                  alert('Logged out successfully');
-                }}>
-                  Yes, Log Out
-                </button>
+                            <button
+              className="modal-confirm"
+              onClick={() => {
+                setShowLogoutConfirm(false);
+
+                // 🧹 Clear data
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+
+                // 🔁 Redirect to login page
+                nav("/");
+
+              }}
+            >
+              Yes, Log Out
+            </button>
               </div>
             </div>
           </div>
