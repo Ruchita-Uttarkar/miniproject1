@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const nav = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
   const [hoveredCard, setHoveredCard] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -700,8 +701,12 @@ export default function Dashboard() {
           </div>
           <div className="navbar-right">
             <div className="navbar-user">
-              <div className="navbar-avatar">A</div>
-              <span className="navbar-username">Ayurvedic User</span>
+              <div className="navbar-avatar">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <span className="navbar-username">
+                {user?.name || "User"}
+              </span>
             </div>
             <button className="logout-btn" onClick={() => setShowLogoutConfirm(true)}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
